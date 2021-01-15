@@ -1,0 +1,41 @@
+trigger UpdateContact on Account (after insert , after update){
+
+if(trigger.isinsert && trigger.isafter)    {
+
+    List<Contact> ct = new List <Contact>();
+
+    for(Account acc : [select id,Only_Default_Contact__c from account where id in : trigger.new])
+    {
+
+        Contact c = new Contact(
+                                FirstName = 'Info',
+                                LastName = 'Default',
+                                Email = 'info@websitedomail.tld',
+                                AccountId=acc.id
+                             );
+                             
+        {
+            
+                acc.Only_Default_Contact__c = True;
+                  update acc;
+            
+             if(ct.size()>1){
+                    acc.Only_Default_Contact__c = False;
+                  update acc;
+              }
+         
+    }
+                            
+           ct.add(c);
+        
+    }
+    insert ct;
+     
+   
+    }
+
+    if(trigger.isupdate && trigger.isafter){
+     
+    }
+
+}
